@@ -210,6 +210,81 @@ export class ValidationMiddleware {
   }
 
   /**
+   * Validates account creation request body
+   * @param req - Express request object
+   * @param res - Express response object
+   * @param next - Express next function
+   */
+  static validateAccountCreation(req: ValidatedRequest, res: Response, next: NextFunction): void {
+    const { account_number, initial_balance } = req.body;
+    
+    // Validate account_number
+    if (!account_number || typeof account_number !== 'string') {
+      res.status(400).json({
+        error: 'Account number is required and must be a string',
+        code: 'INVALID_ACCOUNT_NUMBER',
+        timestamp: new Date().toISOString(),
+        path: req.path,
+        method: req.method
+      });
+      return;
+    }
+
+    const trimmedAccountNumber = account_number.trim();
+    
+    // Validate account number format
+    if (!AccountValidator.isValidAccountNumber(trimmedAccountNumber)) {
+      res.status(400).json({
+        error: 'Invalid account number format. Account number must be 6-12 digits',
+        code: 'VALIDATION_ERROR',
+        timestamp: new Date().toISOString(),
+        path: req.path,
+        method: req.method
+      });
+      return;
+    }
+    
+    // Validate initial_balance
+    if (initial_balance === undefined || initial_balance === null) {
+      res.status(400).json({
+        error: 'Initial balance is required',
+        code: 'INVALID_INITIAL_BALANCE',
+        timestamp: new Date().toISOString(),
+        path: req.path,
+        method: req.method
+      });
+      return;
+    }
+    
+    if (typeof initial_balance !== 'number' || isNaN(initial_balance) || !isFinite(initial_balance)) {
+      res.status(400).json({
+        error: 'Initial balance must be a valid number',
+        code: 'INVALID_INITIAL_BALANCE',
+        timestamp: new Date().toISOString(),
+        path: req.path,
+        method: req.method
+      });
+      return;
+    }
+    
+    if (initial_balance < 0) {
+      res.status(400).json({
+        error: 'Initial balance cannot be negative',
+        code: 'INVALID_INITIAL_BALANCE',
+        timestamp: new Date().toISOString(),
+        path: req.path,
+        method: req.method
+      });
+      return;
+    }
+
+    // Store validated values for use in route handlers
+    req.validatedAccountNumber = trimmedAccountNumber;
+    req.validatedAmount = initial_balance;
+    next();
+  }
+
+  /**
    * Validates request method for specific endpoints
    * @param allowedMethods - Array of allowed HTTP methods
    * @returns Middleware function

@@ -2,6 +2,7 @@ import express, { Request, Response, Application } from 'express';
 import cors from 'cors';
 import accountRoutes from './routes/accountRoutes';
 import { ErrorHandlingMiddleware } from './middleware/ErrorHandlingMiddleware';
+import { DataStore } from './services/DataStore';
 
 // Environment configuration
 interface AppConfig {
@@ -27,29 +28,14 @@ const app: Application = express();
 // Trust proxy for cloud deployment (Heroku, AWS, etc.)
 app.set('trust proxy', 1);
 
-// CORS configuration for production
-const corsOptions = {
-  origin: config.corsOrigin === '*' ? true : config.corsOrigin.split(','),
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: false,
-  optionsSuccessStatus: 200 // For legacy browser support
-};
-
-// Middleware
-app.use(cors(corsOptions));
+// Simplified CORS for demo - allows all origins
+app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Security headers
+// Basic security headers for demo
 app.use((_req: Request, res: Response, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  if (config.nodeEnv === 'production') {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  }
   next();
 });
 
@@ -94,29 +80,89 @@ app.get('/live', (_req: Request, res: Response): void => {
   });
 });
 
+// Seed endpoint for demo data
+app.post('/seed', (_req: Request, res: Response): void => {
+  try {
+    const dataStore = DataStore.getInstance();
+    const beforeSeed = dataStore.getSeedingInfo();
+    
+    if (beforeSeed.isSeeded) {
+      res.status(200).json({
+        message: 'Demo accounts already seeded',
+        status: 'already_seeded',
+        accountCount: beforeSeed.accountCount,
+        accounts: beforeSeed.accounts,
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
+
+    dataStore.initializeAccounts();
+    const afterSeed = dataStore.getSeedingInfo();
+
+    res.status(201).json({
+      message: 'Demo accounts seeded successfully',
+      status: 'seeded',
+      accountCount: afterSeed.accountCount,
+      accounts: afterSeed.accounts,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error seeding accounts:', error);
+    res.status(500).json({
+      error: 'Failed to seed demo accounts',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Seed status endpoint
+app.get('/seed', (_req: Request, res: Response): void => {
+  try {
+    const dataStore = DataStore.getInstance();
+    const seedInfo = dataStore.getSeedingInfo();
+
+    res.status(200).json({
+      ...seedInfo,
+      message: seedInfo.isSeeded ? 'Demo accounts are seeded' : 'Demo accounts not seeded yet',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error checking seed status:', error);
+    res.status(500).json({
+      error: 'Failed to check seed status',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // API information endpoint
 app.get('/', (_req: Request, res: Response): void => {
+  const dataStore = DataStore.getInstance();
+  const seedInfo = dataStore.getSeedingInfo();
+
   res.json({
-    name: 'ATM System API',
+    name: 'ATM System API - Demo',
     version: config.apiVersion,
     environment: config.nodeEnv,
     description: 'A simple ATM system with REST API for balance inquiry, withdrawal, and deposit operations',
+    demo: {
+      isSeeded: seedInfo.isSeeded,
+      accountCount: seedInfo.accountCount,
+      seedEndpoint: 'POST /seed (to initialize demo accounts)'
+    },
     endpoints: {
+      seed: 'POST /seed (initialize demo accounts)',
+      seedStatus: 'GET /seed (check seed status)',
       health: `GET ${config.healthCheckPath}`,
-      ready: 'GET /ready',
-      live: 'GET /live',
+      createAccount: 'POST /accounts (create new account)',
       balance: 'GET /accounts/{account_number}/balance',
       withdraw: 'POST /accounts/{account_number}/withdraw',
       deposit: 'POST /accounts/{account_number}/deposit'
     },
-    documentation: {
-      swagger: '/api-docs',
-      postman: 'https://documenter.getpostman.com/view/atm-system'
-    },
-    support: {
-      contact: 'support@atm-system.com',
-      issues: 'https://github.com/atm-system/issues'
-    }
+    demoAccounts: seedInfo.isSeeded ? seedInfo.accounts : 'Use POST /seed to initialize demo accounts'
   });
 });
 

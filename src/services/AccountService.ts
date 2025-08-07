@@ -25,6 +25,13 @@ export class InvalidAmountError extends Error {
   }
 }
 
+export class AccountAlreadyExistsError extends Error {
+  constructor(accountNumber: string) {
+    super(`Account ${accountNumber} already exists`);
+    this.name = 'AccountAlreadyExistsError';
+  }
+}
+
 /**
  * Service class for handling account business logic operations
  */
@@ -202,6 +209,48 @@ export class AccountService {
     }
 
     return this.dataStore.accountExists(trimmedAccountNumber);
+  }
+
+  /**
+   * Create a new account
+   * @param accountNumber - The account number for the new account
+   * @param initialBalance - The initial balance for the account
+   * @returns The created account object
+   * @throws AccountAlreadyExistsError if account already exists
+   * @throws InvalidAmountError if initial balance is invalid
+   * @throws Error if account number format is invalid
+   */
+  public createAccount(accountNumber: string, initialBalance: number): Account {
+    // Validate inputs
+    if (!accountNumber || typeof accountNumber !== 'string') {
+      throw new Error('Account number must be a non-empty string');
+    }
+
+    if (typeof initialBalance !== 'number') {
+      throw new InvalidAmountError('Initial balance must be a number');
+    }
+
+    const trimmedAccountNumber = accountNumber.trim();
+    
+    // Validate account number format
+    if (!AccountValidator.isValidAccountNumber(trimmedAccountNumber)) {
+      throw new Error('Invalid account number format. Account number must be 6-12 digits');
+    }
+
+    // Validate initial balance (can be zero, but not negative)
+    if (!AccountValidator.isValidBalance(initialBalance)) {
+      throw new InvalidAmountError('Initial balance must be zero or positive');
+    }
+
+    // Check if account already exists
+    if (this.dataStore.accountExists(trimmedAccountNumber)) {
+      throw new AccountAlreadyExistsError(trimmedAccountNumber);
+    }
+
+    // Create account through data store
+    const newAccount = this.dataStore.createAccount(trimmedAccountNumber, initialBalance);
+
+    return newAccount;
   }
 
   /**

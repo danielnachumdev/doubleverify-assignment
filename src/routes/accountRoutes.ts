@@ -7,6 +7,61 @@ const router = Router();
 const accountService = new AccountService();
 
 /**
+ * POST /accounts
+ * Create a new account
+ */
+router.post(
+  '/',
+  ValidationMiddleware.validateContentType,
+  ValidationMiddleware.validateRequestBody,
+  ValidationMiddleware.validateAllowedFields(['account_number', 'initial_balance']),
+  ValidationMiddleware.validateAccountCreation,
+  ErrorHandlingMiddleware.asyncHandler(async (req: ValidatedRequest, res: Response): Promise<void> => {
+    const accountNumber = req.validatedAccountNumber!;
+    const initialBalance = req.validatedAmount!;
+    
+    try {
+      // Create account through service
+      const newAccount = accountService.createAccount(accountNumber, initialBalance);
+      
+      // Return successful response
+      res.status(201).json({
+        account_number: newAccount.account_number,
+        balance: newAccount.balance,
+        transaction: 'account_created',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error: any) {
+      // Handle specific service errors
+      if (error.name === 'AccountAlreadyExistsError') {
+        res.status(400).json({
+          error: error.message,
+          code: 'ACCOUNT_ALREADY_EXISTS',
+          timestamp: new Date().toISOString(),
+          path: req.path,
+          method: req.method
+        });
+        return;
+      }
+      
+      if (error.message.includes('Invalid account number format')) {
+        res.status(400).json({
+          error: error.message,
+          code: 'VALIDATION_ERROR',
+          timestamp: new Date().toISOString(),
+          path: req.path,
+          method: req.method
+        });
+        return;
+      }
+      
+      // Re-throw other errors to be handled by global error handler
+      throw error;
+    }
+  })
+);
+
+/**
  * GET /accounts/:account_number/balance
  * Retrieve the balance for a specific account
  */

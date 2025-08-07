@@ -13,7 +13,8 @@ export class DataStore {
    */
   private constructor() {
     this.accounts = new Map<string, Account>();
-    this.initializeAccounts();
+    // Note: Accounts are not automatically initialized
+    // Use the /seed endpoint to initialize demo accounts
   }
 
   /**
@@ -29,6 +30,7 @@ export class DataStore {
 
   /**
    * Initialize the data store with test accounts for demonstration
+   * This method should be called explicitly via the /seed endpoint
    */
   public initializeAccounts(): void {
     const testAccounts: Array<{ account_number: string; balance: number }> = [
@@ -52,7 +54,7 @@ export class DataStore {
       }
     });
 
-    console.log(`Initialized ${this.accounts.size} test accounts`);
+    console.log(`✅ Seeded ${this.accounts.size} demo accounts`);
   }
 
   /**
@@ -176,5 +178,18 @@ export class DataStore {
   public reset(): void {
     this.clearAllAccounts();
     this.initializeAccounts();
+  }
+
+  /**
+   * Get seeding status information
+   * @returns Object with seeding information
+   */
+  public getSeedingInfo(): { isSeeded: boolean; accountCount: number; accounts: string[] } {
+    const accounts = Array.from(this.accounts.keys());
+    return {
+      isSeeded: this.accounts.size > 0,
+      accountCount: this.accounts.size,
+      accounts: accounts
+    };
   }
 }
