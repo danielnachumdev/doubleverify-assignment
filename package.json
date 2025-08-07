@@ -18,7 +18,15 @@
     "test:unit": "jest tests/unit tests/services tests/middleware tests/models",
     "test:integration": "jest tests/integration tests/routes",
     "prebuild": "rimraf dist",
-    "postbuild": "echo 'Build completed successfully'"
+    "postbuild": "echo 'Build completed successfully'",
+    "deploy:heroku": "git push heroku main",
+    "deploy:docker": "docker build -t atm-system . && docker run -p 3000:3000 atm-system",
+    "deploy:docker:compose": "docker-compose up --build",
+    "deploy:k8s": "kubectl apply -f k8s-deployment.yaml",
+    "health:check": "curl -f http://localhost:3000/health || exit 1",
+    "lint": "echo 'Linting not configured yet'",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix"
   },
   "keywords": ["atm", "banking", "api", "rest", "nodejs", "express", "typescript"],
   "author": "",
@@ -69,6 +77,15 @@
     }
   },
   "engines": {
-    "node": ">=14.0.0"
-  }
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/atm-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/atm-system/issues"
+  },
+  "homepage": "https://github.com/your-username/atm-system#readme"
 }

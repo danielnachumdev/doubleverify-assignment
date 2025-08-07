@@ -13,7 +13,10 @@
 
 
 - [ ] 2. Implement core data models and storage
-  - [ ] 2.1 Create Account model interface and validation
+  - [x] 2.1 Create Account model interface and validation
+
+
+
     - Define TypeScript Account interface with account_number and balance properties
     - Implement account validation functions with proper TypeScript types
 
@@ -133,7 +136,10 @@
     - _Requirements: 6.2_
 
 - [ ] 6. Prepare for deployment
-  - [ ] 6.1 Configure application for cloud deployment
+  - [x] 6.1 Configure application for cloud deployment
+
+
+
     - Add environment variable configuration for port and settings
     - Implement CORS middleware for web access
     - Create start script and configure package.json for deployment
