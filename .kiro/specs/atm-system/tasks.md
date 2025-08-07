@@ -21,7 +21,8 @@
     - Write unit tests for Account model validation using TypeScript
     - _Requirements: 4.1, 4.2_
 
-  - [ ] 2.2 Implement in-memory data store
+  - [x] 2.2 Implement in-memory data store
+
     - Create DataStore class with TypeScript Map-based storage for accounts
     - Implement getAccount, updateAccount, and initializeAccounts methods with proper typing
     - Initialize test accounts for demonstration purposes
@@ -29,7 +30,10 @@
     - _Requirements: 4.3, 4.4_
 
 - [ ] 3. Implement business logic services
-  - [ ] 3.1 Create AccountService with balance operations
+  - [x] 3.1 Create AccountService with balance operations
+
+
+
     - Implement getBalance method to retrieve account balance
     - Add account existence validation
     - Write unit tests for balance retrieval scenarios
