@@ -85,7 +85,7 @@ app.post('/seed', (_req: Request, res: Response): void => {
   try {
     const dataStore = DataStore.getInstance();
     const beforeSeed = dataStore.getSeedingInfo();
-    
+
     if (beforeSeed.isSeeded) {
       res.status(200).json({
         message: 'Demo accounts already seeded',
