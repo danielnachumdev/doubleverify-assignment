@@ -175,68 +175,71 @@ app.use(ErrorHandlingMiddleware.handleNotFound);
 // Global error handler
 app.use(ErrorHandlingMiddleware.handleError);
 
-// Start server
-const server = app.listen(config.port, (): void => {
-  console.log(`🚀 ATM System server is running`);
-  console.log(`📍 Environment: ${config.nodeEnv}`);
-  console.log(`🌐 Port: ${config.port}`);
-  console.log(`🏥 Health check: http://localhost:${config.port}${config.healthCheckPath}`);
-  console.log(`📊 API info: http://localhost:${config.port}/`);
+// Only start server if not in test environment
+if (config.nodeEnv !== 'test') {
+  // Start server
+  const server = app.listen(config.port, (): void => {
+    console.log(`🚀 ATM System server is running`);
+    console.log(`📍 Environment: ${config.nodeEnv}`);
+    console.log(`🌐 Port: ${config.port}`);
+    console.log(`🏥 Health check: http://localhost:${config.port}${config.healthCheckPath}`);
+    console.log(`📊 API info: http://localhost:${config.port}/`);
 
-  if (config.nodeEnv === 'development') {
-    console.log(`🔧 Development mode - CORS origin: ${config.corsOrigin}`);
-  }
-});
+    if (config.nodeEnv === 'development') {
+      console.log(`🔧 Development mode - CORS origin: ${config.corsOrigin}`);
+    }
+  });
 
-// Graceful shutdown handling
-let isShuttingDown = false;
+  // Graceful shutdown handling
+  let isShuttingDown = false;
 
-const gracefulShutdown = (signal: string) => {
-  if (isShuttingDown) {
-    console.log('Shutdown already in progress...');
-    return;
-  }
-
-  isShuttingDown = true;
-  console.log(`\n${signal} received. Starting graceful shutdown...`);
-
-  // Set a shorter timeout for development
-  const shutdownTimeout = config.nodeEnv === 'development' ? 5000 : 30000;
-
-  // Force shutdown after timeout
-  const forceShutdownTimer = setTimeout(() => {
-    console.error(`Forced shutdown after ${shutdownTimeout / 1000}s timeout`);
-    process.exit(1);
-  }, shutdownTimeout);
-
-  // Close server gracefully
-  server.close((err) => {
-    clearTimeout(forceShutdownTimer);
-
-    if (err) {
-      console.error('Error during server shutdown:', err);
-      process.exit(1);
+  const gracefulShutdown = (signal: string) => {
+    if (isShuttingDown) {
+      console.log('Shutdown already in progress...');
+      return;
     }
 
-    console.log('✅ Server closed successfully');
-    process.exit(0);
+    isShuttingDown = true;
+    console.log(`\n${signal} received. Starting graceful shutdown...`);
+
+    // Set a shorter timeout for development
+    const shutdownTimeout = config.nodeEnv === 'development' ? 5000 : 30000;
+
+    // Force shutdown after timeout
+    const forceShutdownTimer = setTimeout(() => {
+      console.error(`Forced shutdown after ${shutdownTimeout / 1000}s timeout`);
+      process.exit(1);
+    }, shutdownTimeout);
+
+    // Close server gracefully
+    server.close((err) => {
+      clearTimeout(forceShutdownTimer);
+
+      if (err) {
+        console.error('Error during server shutdown:', err);
+        process.exit(1);
+      }
+
+      console.log('✅ Server closed successfully');
+      process.exit(0);
+    });
+  };
+
+  // Handle graceful shutdown signals
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+  // Handle uncaught exceptions
+  process.on('uncaughtException', (err) => {
+    console.error('❌ Uncaught Exception:', err);
+    gracefulShutdown('UNCAUGHT_EXCEPTION');
   });
-};
 
-// Handle graceful shutdown signals
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-  console.error('❌ Uncaught Exception:', err);
-  gracefulShutdown('UNCAUGHT_EXCEPTION');
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-  gracefulShutdown('UNHANDLED_REJECTION');
-});
+  // Handle unhandled promise rejections
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+    gracefulShutdown('UNHANDLED_REJECTION');
+  });
+}
 
 export default app;
