@@ -88,17 +88,7 @@ cd doubleverify-assignment
 
 ### 3.2 Configure Environment
 
-```bash
-# Create environment file
-cat > .env.production << EOF
-NODE_ENV=production
-PORT=3000
-API_VERSION=1.0.0
-CORS_ORIGIN=*
-LOG_LEVEL=info
-HEALTH_CHECK_PATH=/health
-EOF
-```
+The application uses environment variables that are configured in `docker-compose.yml`. No additional environment files are needed.
 
 ### 3.3 Build and Start Services
 
@@ -223,10 +213,10 @@ BACKUP_DIR="$HOME/backups"
 mkdir -p "$BACKUP_DIR/$DATE"
 
 # Backup application data (if any persistent data exists)
-docker-compose exec atm-system tar czf - /app/data 2>/dev/null | cat > "$BACKUP_DIR/$DATE/app_data.tar.gz" || echo "No app data to backup"
+docker-compose exec doubleverify-assignment tar czf - /app/data 2>/dev/null | cat > "$BACKUP_DIR/$DATE/app_data.tar.gz" || echo "No app data to backup"
 
 # Backup configuration
-cp -r ~/atm-system "$BACKUP_DIR/$DATE/"
+cp -r ~/doubleverify-assignment "$BACKUP_DIR/$DATE/"
 
 # Keep only last 7 backups
 find "$BACKUP_DIR" -maxdepth 1 -type d -mtime +7 -exec rm -rf {} \;
