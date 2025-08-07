@@ -1,7 +1,7 @@
 services:
-  atm-system:
+  doubleverify-assignment:
     build: .
-    container_name: atm-system
+    container_name: doubleverify-assignment
     ports:
       - "3000:3000"
     environment:
@@ -40,7 +40,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
-      - atm-system
+      - doubleverify-assignment
     networks:
       - atm-network
     profiles:

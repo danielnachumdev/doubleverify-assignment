@@ -1,5 +1,5 @@
 {
-  "name": "atm-system",
+  "name": "doubleverify-assignment",
   "version": "1.0.0",
   "description": "A simple ATM system with REST API for balance inquiry, withdrawal, and deposit operations",
   "main": "dist/server.js",
@@ -28,7 +28,15 @@
     "security:audit": "npm audit",
     "security:fix": "npm audit fix"
   },
-  "keywords": ["atm", "banking", "api", "rest", "nodejs", "express", "typescript"],
+  "keywords": [
+    "atm",
+    "banking",
+    "api",
+    "rest",
+    "nodejs",
+    "express",
+    "typescript"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -52,8 +60,14 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "roots": ["<rootDir>/src", "<rootDir>/tests"],
-    "testMatch": ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/tests"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
     "collectCoverageFrom": [
       "src/**/*.ts",
       "!src/server.ts",
@@ -82,10 +96,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/atm-system.git"
+    "url": "https://github.com/your-username/doubleverify-assignment.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/atm-system/issues"
+    "url": "https://github.com/your-username/doubleverify-assignment/issues"
   },
-  "homepage": "https://github.com/your-username/atm-system#readme"
+  "homepage": "https://github.com/your-username/doubleverify-assignment#readme"
 }
