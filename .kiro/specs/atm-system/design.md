@@ -2,7 +2,7 @@
 
 ## Overview
 
-The ATM system is a RESTful web service that provides basic banking operations through HTTP endpoints. The system follows a layered architecture with clear separation of concerns, using in-memory storage for simplicity and fast access. The application will be built using Node.js with Express.js framework for robust HTTP handling and will be deployed to a cloud platform for accessibility.
+The ATM system is a RESTful web service that provides basic banking operations through HTTP endpoints. The system follows a layered architecture with clear separation of concerns, using in-memory storage for simplicity and fast access. The application will be built using Node.js with TypeScript and Express.js framework for robust HTTP handling, type safety, and better development experience. It will be deployed to a cloud platform for accessibility.
 
 ## Architecture
 
@@ -28,9 +28,10 @@ The system follows a three-layer architecture:
 ### Key Architectural Decisions:
 
 1. **RESTful Design**: Following REST principles for predictable and standard API interactions
-2. **In-Memory Storage**: Using JavaScript objects/Maps for fast data access without database complexity
-3. **Stateless Service**: Each request contains all necessary information, enabling horizontal scaling
-4. **JSON Communication**: Using JSON for request/response bodies for easy integration
+2. **TypeScript**: Using TypeScript for type safety, better IDE support, and improved code maintainability
+3. **In-Memory Storage**: Using TypeScript Maps for fast data access without database complexity
+4. **Stateless Service**: Each request contains all necessary information, enabling horizontal scaling
+5. **JSON Communication**: Using JSON for request/response bodies with TypeScript interfaces for type safety
 
 ## Components and Interfaces
 
@@ -91,9 +92,9 @@ interface Account {
 ## Data Models
 
 ### Account Storage Structure
-```javascript
+```typescript
 // In-memory storage using Map for O(1) lookups
-const accounts = new Map([
+const accounts = new Map<string, Account>([
   ['123456789', { account_number: '123456789', balance: 1000.00 }],
   ['987654321', { account_number: '987654321', balance: 2500.50 }],
   ['555666777', { account_number: '555666777', balance: 100.25 }]
@@ -209,10 +210,18 @@ const accounts = new Map([
 - **Alternative**: Railway, Render, or AWS Lambda
 
 ### Deployment Configuration
-```javascript
+```typescript
 // Environment configuration
-const config = {
-  port: process.env.PORT || 3000,
+interface Config {
+  port: number;
+  environment: string;
+  cors: {
+    origin: string;
+  };
+}
+
+const config: Config = {
+  port: parseInt(process.env.PORT || '3000'),
   environment: process.env.NODE_ENV || 'development',
   cors: {
     origin: process.env.CORS_ORIGIN || '*'

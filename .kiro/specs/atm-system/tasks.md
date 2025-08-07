@@ -1,24 +1,25 @@
 # Implementation Plan
 
 - [ ] 1. Set up project structure and dependencies
-  - Initialize Node.js project with package.json
-  - Install Express.js, Jest, Supertest, and other required dependencies
+  - Initialize Node.js project with package.json and TypeScript configuration
+  - Install Express.js, TypeScript, Jest, Supertest, and other required dependencies
   - Create directory structure for models, services, routes, and tests
-  - Set up basic Express.js server with health check endpoint
+  - Set up basic Express.js server with health check endpoint using TypeScript
+  - Configure TypeScript compilation and build scripts
   - _Requirements: 5.1, 5.2_
 
 - [ ] 2. Implement core data models and storage
   - [ ] 2.1 Create Account model interface and validation
-    - Define Account interface with account_number and balance properties
-    - Implement account validation functions for data integrity
-    - Write unit tests for Account model validation
+    - Define TypeScript Account interface with account_number and balance properties
+    - Implement account validation functions with proper TypeScript types
+    - Write unit tests for Account model validation using TypeScript
     - _Requirements: 4.1, 4.2_
 
   - [ ] 2.2 Implement in-memory data store
-    - Create DataStore class with Map-based storage for accounts
-    - Implement getAccount, updateAccount, and initializeAccounts methods
+    - Create DataStore class with TypeScript Map-based storage for accounts
+    - Implement getAccount, updateAccount, and initializeAccounts methods with proper typing
     - Initialize test accounts for demonstration purposes
-    - Write unit tests for data store operations
+    - Write unit tests for data store operations using TypeScript
     - _Requirements: 4.3, 4.4_
 
 - [ ] 3. Implement business logic services
