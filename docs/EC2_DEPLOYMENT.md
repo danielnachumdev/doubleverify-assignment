@@ -1,6 +1,6 @@
 # EC2 Deployment Guide - Docker Setup
 
-This guide provides comprehensive instructions for deploying the ATM System to AWS EC2 using Docker.
+This guide provides comprehensive instructions for deploying the DoubleVerify Assignment ATM System to AWS EC2 using Docker.
 
 ## Overview
 
@@ -8,13 +8,10 @@ This deployment uses:
 - **AWS EC2** instance for hosting
 - **Docker** for containerization
 - **Docker Compose** for orchestration
-- **Nginx** as reverse proxy (optional)
-- **Let's Encrypt** for SSL certificates (optional)
 
 ## Prerequisites
 
 - AWS Account with EC2 access
-- Domain name (optional, for SSL)
 - Basic knowledge of AWS EC2 and Docker
 - SSH key pair for EC2 access
 
@@ -85,8 +82,8 @@ docker-compose --version
 
 ```bash
 # Clone your repository (replace with your repo URL)
-git clone https://github.com/your-username/atm-system.git
-cd atm-system
+git clone https://github.com/danielnachumdev/doubleverify-assignment.git
+cd doubleverify-assignment
 ```
 
 ### 3.2 Configure Environment
@@ -157,117 +154,21 @@ curl http://$EC2_IP:3000/health
 curl http://$EC2_IP:3000/accounts/123456789/balance
 ```
 
-## Step 5: Production Setup (Optional)
 
-### 5.1 Setup Nginx Reverse Proxy
 
-```bash
-# Install Nginx
-sudo apt install nginx -y
+## Step 5: Monitoring and Maintenance
 
-# Create Nginx configuration
-sudo nano /etc/nginx/sites-available/atm-system
-```
-
-Add this configuration:
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;  # Replace with your domain or EC2 public IP
-    
-    # Security headers
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header Referrer-Policy "no-referrer-when-downgrade" always;
-    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
-    
-    # Rate limiting
-    limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
-    limit_req zone=api burst=20 nodelay;
-    
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-        
-        # Timeouts
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
-    }
-    
-    # Health check endpoint (bypass rate limiting)
-    location /health {
-        proxy_pass http://localhost:3000/health;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # No rate limiting for health checks
-        limit_req off;
-    }
-}
-```
-
-Enable the site:
-```bash
-# Enable site
-sudo ln -s /etc/nginx/sites-available/atm-system /etc/nginx/sites-enabled/
-
-# Remove default site
-sudo rm /etc/nginx/sites-enabled/default
-
-# Test configuration
-sudo nginx -t
-
-# Restart Nginx
-sudo systemctl restart nginx
-sudo systemctl enable nginx
-```
-
-### 5.2 Setup SSL with Let's Encrypt (Optional)
-
-```bash
-# Install Certbot
-sudo apt install snapd -y
-sudo snap install core; sudo snap refresh core
-sudo snap install --classic certbot
-
-# Create symlink
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
-
-# Get SSL certificate (replace with your domain)
-sudo certbot --nginx -d your-domain.com
-
-# Test auto-renewal
-sudo certbot renew --dry-run
-```
-
-## Step 6: Monitoring and Maintenance
-
-### 6.1 View Logs
+### 5.1 View Logs
 
 ```bash
 # Application logs
 docker-compose logs -f
 
-# Nginx logs
-sudo tail -f /var/log/nginx/access.log
-sudo tail -f /var/log/nginx/error.log
-
 # System logs
-sudo journalctl -u nginx -f
+sudo journalctl -f
 ```
 
-### 6.2 Container Management
+### 5.2 Container Management
 
 ```bash
 # Check container status
@@ -287,7 +188,7 @@ docker-compose down
 docker-compose down -v
 ```
 
-### 6.3 System Monitoring
+### 5.3 System Monitoring
 
 ```bash
 # Check system resources
@@ -300,9 +201,9 @@ docker system df
 docker stats
 ```
 
-## Step 7: Backup and Recovery
+## Step 6: Backup and Recovery
 
-### 7.1 Create Backup Script
+### 6.1 Create Backup Script
 
 ```bash
 # Create backup directory
@@ -343,23 +244,23 @@ crontab -e
 # Add: 0 2 * * * /home/ubuntu/backup.sh
 ```
 
-## Step 8: Security Hardening
+## Step 7: Security Hardening
 
-### 8.1 Firewall Configuration
+### 7.1 Firewall Configuration
 
 ```bash
 # Install and configure UFW
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow ssh
-sudo ufw allow 'Nginx Full'
+sudo ufw allow 3000
 sudo ufw --force enable
 
 # Check status
 sudo ufw status
 ```
 
-### 8.2 Fail2Ban Setup
+### 7.2 Fail2Ban Setup
 
 ```bash
 # Install Fail2Ban
@@ -379,14 +280,8 @@ maxretry = 5
 [sshd]
 enabled = true
 
-[nginx-http-auth]
+[sshd]
 enabled = true
-
-[nginx-limit-req]
-enabled = true
-filter = nginx-limit-req
-logpath = /var/log/nginx/error.log
-maxretry = 10
 ```
 
 Start Fail2Ban:
@@ -399,6 +294,24 @@ sudo fail2ban-client status
 ## Troubleshooting
 
 ### Common Issues
+
+1. **SSL/TLS Connection Errors (WRONG_VERSION_NUMBER)**
+   ```bash
+   # Error: write EPROTO 1025344:error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER
+   # Solution: Use HTTP instead of HTTPS
+   
+   # Correct URL format:
+   http://your-ec2-ip:3000/health
+   
+   # NOT:
+   https://your-ec2-ip:3000/health
+   ```
+   
+   **In Postman:**
+   - Make sure URL starts with `http://` not `https://`
+   - Clear request cache
+   - Disable "Automatically follow redirects"
+   - Turn OFF "SSL certificate verification" in settings
 
 1. **Port 3000 not accessible**
    ```bash
@@ -424,17 +337,10 @@ sudo fail2ban-client status
    docker-compose logs
    
    # Check environment variables
-   docker-compose exec atm-system env
+docker-compose exec doubleverify-assignment env
    ```
 
-4. **Nginx configuration errors**
-   ```bash
-   # Test configuration
-   sudo nginx -t
-   
-   # Check logs
-   sudo tail -f /var/log/nginx/error.log
-   ```
+
 
 ### Health Checks
 
@@ -502,12 +408,9 @@ docker-compose down -v
 docker system prune -a
 
 # Remove application files
-rm -rf ~/atm-system
+rm -rf ~/doubleverify-assignment
 
-# Remove Nginx configuration
-sudo rm /etc/nginx/sites-enabled/atm-system
-sudo rm /etc/nginx/sites-available/atm-system
-sudo systemctl restart nginx
+
 
 # Terminate EC2 instance via AWS Console
 ```

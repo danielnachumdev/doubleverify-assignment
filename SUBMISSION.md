@@ -4,26 +4,26 @@
 
 **Project Name**: DoubleVerify Assignment - ATM System API
 **Technology Stack**: Node.js, TypeScript, Express.js, Docker  
-**Repository**: [GitHub Repository](https://github.com/your-username/doubleverify-assignment)  
-**Live Demo**: [Deployed Application](https://your-deployment-url.com)  
+**Repository**: [GitHub Repository](https://github.com/danielnachumdev/doubleverify-assignment)  
+**Live Demo**: [Deployed Application](http://51.20.133.7:3000)  
 
 ## 🔗 Important Links
 
 ### Repository
-- **GitHub Repository**: [https://github.com/your-username/doubleverify-assignment](https://github.com/your-username/doubleverify-assignment)
+- **GitHub Repository**: [https://github.com/danielnachumdev/doubleverify-assignment](https://github.com/danielnachumdev/doubleverify-assignment)
 - **Main Branch**: `main`
-- **Latest Commit**: [View Latest Changes](https://github.com/your-username/doubleverify-assignment/commit/main)
+- **Latest Commit**: [View Latest Changes](https://github.com/danielnachumdev/doubleverify-assignment/commit/main)
 
 ### Live Application
-- **Production URL**: [https://your-deployment-url.com](https://your-deployment-url.com)
-- **Health Check**: [https://your-deployment-url.com/health](https://your-deployment-url.com/health)
-- **API Documentation**: [https://your-deployment-url.com/docs](https://your-deployment-url.com/docs)
+- **Production URL**: [http://51.20.133.7:3000](http://51.20.133.7:3000)
+- **Health Check**: [http://51.20.133.7:3000/health](http://51.20.133.7:3000/health)
+- **API Documentation**: [http://51.20.133.7:3000/](http://51.20.133.7:3000/)
+
+**Note**: The application runs on HTTP (not HTTPS). Use `http://` in all URLs.
 
 ### Deployment Information
 - **Platform**: AWS EC2 with Docker
 - **Deployment Method**: Docker Compose
-- **Reverse Proxy**: Nginx (optional)
-- **SSL**: Let's Encrypt (optional)
 
 ## 📋 Requirements Compliance
 
@@ -98,7 +98,7 @@
 
 ### Production Environment
 - **Status**: ✅ Deployed and Running
-- **URL**: https://your-deployment-url.com
+- **URL**: http://51.20.133.7:3000
 - **Health**: ✅ Healthy
 - **Uptime**: 99.9% (monitored)
 
@@ -119,9 +119,8 @@
 - **Example Requests**: Provided for all endpoints
 
 ### Deployment Documentation
-- **EC2 Deployment Guide**: [EC2_DEPLOYMENT.md](EC2_DEPLOYMENT.md)
+- **EC2 Deployment Guide**: [docs/EC2_DEPLOYMENT.md](docs/EC2_DEPLOYMENT.md)
 - **Docker Configuration**: [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml)
-- **Nginx Configuration**: [nginx.conf](nginx.conf)
 
 ### Development Documentation
 - **Setup Instructions**: Complete local development guide
@@ -162,7 +161,7 @@
 ### Quick Start
 ```bash
 # Clone repository
-git clone https://github.com/your-username/doubleverify-assignment.git
+git clone https://github.com/danielnachumdev/doubleverify-assignment.git
 cd doubleverify-assignment
 
 # Install dependencies
@@ -215,6 +214,6 @@ The system is ready for production use and demonstrates best practices in API de
 ---
 
 **Developer**: [Your Name]  
-**Date**: [Current Date]  
+**Date**: January 15, 2024  
 **Version**: 1.0.0  
 **Status**: ✅ Complete and Ready for Review 

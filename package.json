@@ -96,10 +96,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/doubleverify-assignment.git"
+    "url": "https://github.com/danielnachumdev/doubleverify-assignment.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/doubleverify-assignment/issues"
+    "url": "https://github.com/danielnachumdev/doubleverify-assignment/issues"
   },
-  "homepage": "https://github.com/your-username/doubleverify-assignment#readme"
+  "homepage": "https://github.com/danielnachumdev/doubleverify-assignment#readme"
 }

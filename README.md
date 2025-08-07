@@ -4,9 +4,11 @@ A robust REST API for ATM operations including balance inquiry, withdrawal, and 
 
 ## 🚀 Live Demo
 
-**Deployed Application**: [DoubleVerify ATM System API](https://your-deployment-url.com)
+**Deployed Application**: [DoubleVerify ATM System API](http://51.20.133.7:3000)
 
-**Health Check**: [Health Endpoint](https://your-deployment-url.com/health)
+**Health Check**: [Health Endpoint](http://51.20.133.7:3000/health)
+
+**Source Code**: [GitHub Repository](https://github.com/danielnachumdev/doubleverify-assignment)
 
 ## 📋 Table of Contents
 
@@ -74,8 +76,14 @@ The system is designed with security, reliability, and scalability in mind, feat
 
 ### Base URL
 ```
+# Local Development
 http://localhost:3000
+
+# Production (Deployed)
+http://51.20.133.7:3000
 ```
+
+**Note**: The application runs on HTTP, not HTTPS. Make sure to use `http://` in your requests.
 
 ### Endpoints
 
@@ -237,7 +245,6 @@ Content-Type: application/json
 
 ### Deployment
 - **Container**: Docker + Docker Compose
-- **Reverse Proxy**: Nginx (optional)
 - **Platform**: AWS EC2, Heroku, or any cloud platform
 
 ## 🚀 Installation & Setup
@@ -251,7 +258,7 @@ Content-Type: application/json
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/doubleverify-assignment.git
+git clone https://github.com/danielnachumdev/doubleverify-assignment.git
 cd doubleverify-assignment
 ```
 
@@ -365,6 +372,15 @@ describe('AccountService', () => {
 
 ## 🚀 Deployment
 
+### ✅ Current Deployment Status
+
+**Production Environment**: ✅ **LIVE**
+- **URL**: http://51.20.133.7:3000
+- **Health Check**: http://51.20.133.7:3000/health
+- **Status**: Deployed and Running
+- **Platform**: AWS EC2 with Docker
+- **Last Tested**: ✅ Working (HTTP access confirmed)
+
 ### Docker Deployment
 
 1. **Build and deploy**
@@ -386,8 +402,7 @@ docker-compose logs -f
 
 The application is configured for deployment on various cloud platforms:
 
-- **AWS EC2**: See `EC2_DEPLOYMENT.md`
-- **Heroku**: Configured with `Procfile`
+- **AWS EC2**: See `docs/EC2_DEPLOYMENT.md`
 - **Docker**: Ready for any container platform
 
 ### Environment Variables
