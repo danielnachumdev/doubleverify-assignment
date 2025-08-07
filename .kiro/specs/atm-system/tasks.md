@@ -102,7 +102,10 @@
     - Write integration tests for withdrawal endpoint with all error scenarios
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ] 4.5 Create deposit endpoint
+
+  - [x] 4.5 Create deposit endpoint
+
+
     - Implement POST /accounts/{account_number}/deposit route
     - Integrate with AccountService for deposit processing
     - Add request body validation and error handling

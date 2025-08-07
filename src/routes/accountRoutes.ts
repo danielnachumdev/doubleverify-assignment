@@ -55,4 +55,32 @@ router.post(
   })
 );
 
+/**
+ * POST /accounts/:account_number/deposit
+ * Deposit money into a specific account
+ */
+router.post(
+  '/:account_number/deposit',
+  ValidationMiddleware.validateAccountNumber,
+  ValidationMiddleware.validateContentType,
+  ValidationMiddleware.validateRequestBody,
+  ValidationMiddleware.validateAllowedFields(['amount']),
+  ValidationMiddleware.validateAmount,
+  ErrorHandlingMiddleware.asyncHandler(async (req: ValidatedRequest, res: Response) => {
+    const accountNumber = req.validatedAccountNumber!;
+    const amount = req.validatedAmount!;
+    
+    // Process deposit through service
+    const updatedAccount = accountService.deposit(accountNumber, amount);
+    
+    // Return successful response
+    res.status(200).json({
+      account_number: updatedAccount.account_number,
+      balance: updatedAccount.balance,
+      transaction: 'deposit',
+      amount: amount
+    });
+  })
+);
+
 export default router;
