@@ -74,6 +74,16 @@ export class ValidationMiddleware {
       return;
     }
 
+    // Check for NaN and Infinity specifically (these are numbers but invalid)
+    if (isNaN(amount) || !isFinite(amount)) {
+      res.status(400).json({
+        error: 'Amount must be greater than zero and a valid number',
+        code: 'INVALID_AMOUNT_VALUE',
+        provided: amount
+      });
+      return;
+    }
+
     // Validate amount value
     if (!AccountValidator.isValidAmount(amount)) {
       res.status(400).json({

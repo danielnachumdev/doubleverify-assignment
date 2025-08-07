@@ -27,4 +27,32 @@ router.get(
   })
 );
 
+/**
+ * POST /accounts/:account_number/withdraw
+ * Withdraw money from a specific account
+ */
+router.post(
+  '/:account_number/withdraw',
+  ValidationMiddleware.validateAccountNumber,
+  ValidationMiddleware.validateContentType,
+  ValidationMiddleware.validateRequestBody,
+  ValidationMiddleware.validateAllowedFields(['amount']),
+  ValidationMiddleware.validateAmount,
+  ErrorHandlingMiddleware.asyncHandler(async (req: ValidatedRequest, res: Response) => {
+    const accountNumber = req.validatedAccountNumber!;
+    const amount = req.validatedAmount!;
+    
+    // Process withdrawal through service
+    const updatedAccount = accountService.withdraw(accountNumber, amount);
+    
+    // Return successful response
+    res.status(200).json({
+      account_number: updatedAccount.account_number,
+      balance: updatedAccount.balance,
+      transaction: 'withdrawal',
+      amount: amount
+    });
+  })
+);
+
 export default router;

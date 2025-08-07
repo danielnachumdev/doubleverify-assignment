@@ -90,7 +90,12 @@
     - Write integration tests for balance endpoint
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 4.4 Create withdrawal endpoint
+
+  - [x] 4.4 Create withdrawal endpoint
+
+
+
+
     - Implement POST /accounts/{account_number}/withdraw route
     - Integrate with AccountService for withdrawal processing
     - Add request body validation and error handling
