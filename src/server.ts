@@ -1,5 +1,7 @@
 import express, { Request, Response, Application } from 'express';
 import cors from 'cors';
+import accountRoutes from './routes/accountRoutes';
+import { ErrorHandlingMiddleware } from './middleware/ErrorHandlingMiddleware';
 
 const app: Application = express();
 const PORT: number = parseInt(process.env['PORT'] || '3000');
@@ -30,6 +32,15 @@ app.get('/', (_req: Request, res: Response): void => {
     }
   });
 });
+
+// API Routes
+app.use('/accounts', accountRoutes);
+
+// 404 handler for undefined routes
+app.use(ErrorHandlingMiddleware.handleNotFound);
+
+// Global error handler
+app.use(ErrorHandlingMiddleware.handleError);
 
 // Start server
 if (require.main === module) {

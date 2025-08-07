@@ -80,7 +80,10 @@
     - Write unit tests for error handling scenarios
     - _Requirements: 1.3, 2.2, 2.4, 3.3_
 
-  - [ ] 4.3 Create balance inquiry endpoint
+  - [x] 4.3 Create balance inquiry endpoint
+
+
+
     - Implement GET /accounts/{account_number}/balance route
     - Integrate with AccountService for balance retrieval
     - Add proper HTTP status code responses
