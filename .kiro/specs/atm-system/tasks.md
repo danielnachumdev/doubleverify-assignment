@@ -29,7 +29,9 @@
     - Write unit tests for data store operations using TypeScript
     - _Requirements: 4.3, 4.4_
 
-- [ ] 3. Implement business logic services
+- [x] 3. Implement business logic services
+
+
   - [x] 3.1 Create AccountService with balance operations
 
 
@@ -39,14 +41,18 @@
     - Write unit tests for balance retrieval scenarios
     - _Requirements: 1.1, 1.2, 1.3_
 
-  - [ ] 3.2 Implement withdrawal functionality
+  - [x] 3.2 Implement withdrawal functionality
+
+
     - Create withdraw method with amount validation and balance checking
     - Implement insufficient funds validation
     - Add negative/zero amount validation
     - Write unit tests for withdrawal scenarios including edge cases
     - _Requirements: 2.1, 2.2, 2.3, 2.5, 2.6_
 
-  - [ ] 3.3 Implement deposit functionality
+  - [x] 3.3 Implement deposit functionality
+
+
     - Create deposit method with amount validation
     - Add negative/zero amount validation
     - Implement balance update logic
@@ -54,7 +60,9 @@
     - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
 - [ ] 4. Create API endpoints and middleware
-  - [ ] 4.1 Implement validation middleware
+  - [x] 4.1 Implement validation middleware
+
+
     - Create middleware for request parameter validation
     - Implement amount validation middleware for POST requests
     - Add request body parsing and validation
