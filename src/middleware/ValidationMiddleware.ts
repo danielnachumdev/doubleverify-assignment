@@ -20,7 +20,9 @@ export class ValidationMiddleware {
    * @param next - Express next function
    */
   static validateAccountNumber(req: ValidatedRequest, res: Response, next: NextFunction): void {
-    const { account_number } = req.params;
+    // Express 5 types params as string | string[]; ATM routes use a single path segment.
+    const rawAccountNumber = req.params['account_number'];
+    const account_number = Array.isArray(rawAccountNumber) ? rawAccountNumber[0] : rawAccountNumber;
 
     // Check if account number is provided
     if (!account_number) {
@@ -195,9 +197,13 @@ export class ValidationMiddleware {
    * @param next - Express next function
    */
   static sanitizeInput(req: ValidatedRequest, _res: Response, next: NextFunction): void {
-    // Sanitize account number if present
-    if (req.params['account_number']) {
-      req.params['account_number'] = req.params['account_number'].trim();
+    // Sanitize account number if present (Express 5: param may be string | string[])
+    const rawAccountNumber = req.params['account_number'];
+    if (rawAccountNumber) {
+      const accountNumber = Array.isArray(rawAccountNumber) ? rawAccountNumber[0] : rawAccountNumber;
+      if (accountNumber) {
+        req.params['account_number'] = accountNumber.trim();
+      }
     }
 
     // Sanitize amount if present in body
