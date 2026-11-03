@@ -41,7 +41,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.22.3",
-    "cors": "^2.8.5"
+    "cors": "^2.8.6"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
